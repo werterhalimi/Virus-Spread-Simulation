@@ -12,7 +12,7 @@ import java.awt.event.ActionListener;
 public class Configuration extends JFrame {
     private JPanel panel;
     private Main main;
-    private int student,staff;
+    private int student,staff,infect;
 
     public Configuration(final Main main) throws HeadlessException {
         //Init main
@@ -35,7 +35,6 @@ public class Configuration extends JFrame {
         });
         this.panel.add(studentSlider);
         this.panel.add(studentLabel);
-
         this.staff=10;
         final JSlider profSlider = new JSlider(1,20,this.staff);
         final JLabel profLabel = new JLabel("Nombre de profs: " + profSlider.getValue());
@@ -47,8 +46,25 @@ public class Configuration extends JFrame {
 
             }
         });
+
         this.panel.add(profSlider);
         this.panel.add(profLabel);
+
+        this.infect=1;
+        final JSlider infectSlider = new JSlider(1,20,this.infect);
+        final JLabel infectLabel = new JLabel("Nombre de cas zero: " + infectSlider.getValue());
+
+        infectSlider.addChangeListener(new ChangeListener() {
+            public void stateChanged(ChangeEvent e) {
+                infectLabel.setText("Nombre de cas zero: " + infectSlider.getValue());
+                infect=infectSlider.getValue();
+
+            }
+        });
+
+
+        this.panel.add(infectSlider);
+        this.panel.add(infectLabel);
 
         JButton startButton = new JButton("Start simulation");
         startButton.addActionListener(new ActionListener() {
@@ -62,6 +78,10 @@ public class Configuration extends JFrame {
 
     public void start(){
         this.main.start();
+    }
+
+    public int getInfect() {
+        return infect;
     }
 
     public int getHumansNumber(){
