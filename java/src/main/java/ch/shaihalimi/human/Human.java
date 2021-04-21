@@ -38,10 +38,12 @@ public abstract class Human  {
         if (y > 1000) y=0;
         this.location.move(x,y);
         for (Human human : this.simulation.getHumans()) {
-            if (this.isHealthy() && human.isHealthy()) continue;
-            if(this.getEntityLocation().equals(human.getEntityLocation()))
+            if (this.isHealthy() && human.isHealthy() || this == human) continue;
+            if (!human.isHealthy() && !this.isHealthy()) continue;
+            if(this.getEntityLocation().equals(human.getEntityLocation())) {
                 if (this.isHealthy()) this.setHealthy(false);
                 else human.setHealthy(false);
+            }
         }
     }
 
@@ -60,6 +62,10 @@ public abstract class Human  {
 
     public void setHealthy(boolean healthy) {
         this.healthy = healthy;
+        if (!this.healthy) {
+            this.simulation.newInfection(this);
+            System.out.println(true);
+        }
     }
 
     public EntityLocation getEntityLocation() {

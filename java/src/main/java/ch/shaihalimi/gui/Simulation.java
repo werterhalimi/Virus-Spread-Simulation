@@ -8,18 +8,20 @@ import ch.shaihalimi.human.Student;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
 
 public class Simulation extends JFrame {
 
     private Configuration config;
     private Main instance;
+    private ArrayList<Human> infected;
     private Human[] humans;
-    private Graphics gr;
     private boolean running;
 
     public Simulation(Main main,Configuration config)  {
         this.config = config;
         this.instance = main;
+        this.infected = new ArrayList<Human>();
         this.setVisible(true);
         this.setSize(1000,1000);
         this.setResizable(false);
@@ -34,6 +36,7 @@ public class Simulation extends JFrame {
         super.paintComponents(g);
         g.clearRect(0,0,1000,1000);
         Graphics2D g2d = (Graphics2D) g;
+        this.setTitle("Nombre de cas:" + this.infected.size());
         for (Human human : this.humans){
             human.draw(g2d);
             human.move(Direction.values()[this.getInstance().getRandom().nextInt(7)],this.getInstance().getRandom().nextInt(500));
@@ -52,9 +55,9 @@ public class Simulation extends JFrame {
             this.humans[i] = new Student(this);
         for (int i = this.config.getStudent(); i < this.config.getHumansNumber(); i++)
             this.humans[i] = new Staff(this);
-        humans[58].setHealthy(false);
-        Human h = this.humans[58];
-        this.humans[50].move(h.getX(),h.getY()+150);
+        for (int i = 0; i < this.config.getInfect(); i++)
+            this.humans[this.getInstance().getRandom().nextInt(humans.length)].setHealthy(false);
+
     }
 
     public void start()  {
@@ -81,6 +84,10 @@ public class Simulation extends JFrame {
 
     public Human[] getHumans() {
         return humans;
+    }
+
+    public void newInfection(Human human){
+        this.infected.add(human);
     }
 
     public Main getInstance() {
