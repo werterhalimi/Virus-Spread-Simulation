@@ -13,12 +13,15 @@ public abstract class Human  {
     public Human(Simulation simulation){
         this.simulation = simulation;
         this.healthy = true;
-        this.location = new EntityLocation(this.simulation.getInstance().randomBetween(1000,0),this.simulation.getInstance().randomBetween(1000,0));
+        int x = this.simulation.getInstance().randomBetween(1920,0);
+        int y = this.simulation.getInstance().randomBetween(1080,0);
+        while (this.simulation.getField().getRGB(x,y) != -4080709){
+            x = this.simulation.getInstance().randomBetween(1920,0);
+            y = this.simulation.getInstance().randomBetween(1080,0);
+        }
+        this.location = new EntityLocation(x,y);
     }
 
-    public void test(){
-        System.out.println(new EntityLocation(2,2).equals(new EntityLocation(4,4)));
-    }
 
     public boolean isHealthy() {
         return this.healthy;
@@ -31,23 +34,32 @@ public abstract class Human  {
     }
 
     //TODO: https://natureofcode.com/book/introduction/
-    public void move(int x, int y){
-        if (x < 0) x=1000;
-        if (y < 0) y=1000;
-        if (x > 1000) x=0;
-        if (y > 1000) y=0;
+    private void move(int x, int y){
+        if (x < 0 || y < 0 || x > 1920 || y > 1080) this.direction=this.direction.getOpposite();
+        if (this.direction != null && !this.simulation.isWalkable(x,y)) this.direction=this.direction.getOpposite();
+        if (this.simulation.getField().getRGB(x,y)==-9433843)x=(x>1000)?x-953:x+953;
         this.location.move(x,y);
         for (Human human : this.simulation.getHumans()) {
-            if (this.isHealthy() && human.isHealthy() || this == human) continue;
-            if (!human.isHealthy() && !this.isHealthy()) continue;
             if(this.getEntityLocation().equals(human.getEntityLocation())) {
+//                this.setDirection(human.getDirection());
+//                human.setDirection(this.getDirection());
+                if (this.isHealthy() && human.isHealthy() || this == human) continue;
+                if (!human.isHealthy() && !this.isHealthy()) continue;
                 if (this.isHealthy()) this.setHealthy(false);
                 else human.setHealthy(false);
+
             }
         }
     }
+    public void setDirection(Direction direction){
+        this.direction=direction;
+    }
 
-    public void move(Direction direction,int time){
+    public Direction getDirection() {
+        return direction;
+    }
+
+    public void move(Direction direction, int time){
         if (this.time==0) {
             this.move(this.getX() + direction.getX(), this.getY() + direction.getY());
             this.time=time;
