@@ -18,6 +18,12 @@ public enum Direction {
         this.y = y;
     }
 
+    public Direction getOpposite(){
+        for (Direction value : Direction.values())
+            if (value.getX()==this.x*-1 && value.getY()==this.y*-1) return value;
+        return null;
+    }
+
     public int getX() {
         return x;
     }
