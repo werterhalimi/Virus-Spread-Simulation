@@ -3,12 +3,14 @@ package ch.shaihalimi;
 
 import ch.shaihalimi.gui.Configuration;
 import ch.shaihalimi.gui.Simulation;
+import ch.shaihalimi.human.Direction;
 
 import java.util.Random;
 
 public class Main {
     private static Main instance;
     public static void main(String[] args) {
+
         instance = new Main();
     }
 
