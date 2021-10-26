@@ -21,6 +21,8 @@ public class Simulation extends JFrame {
     private Main instance;
     private ArrayList<Human> infected;
     private Human[] humans;
+    final Font FONT = new Font("Dialog",Font.PLAIN,36);
+    private int frame,dead;
     private boolean running;
 
     public Simulation(Main main,Configuration config)  {
@@ -30,7 +32,6 @@ public class Simulation extends JFrame {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
         this.config = config;
         this.instance = main;
         this.infected = new ArrayList<Human>();
@@ -39,19 +40,24 @@ public class Simulation extends JFrame {
         this.setResizable(false);
         this.getContentPane().setBackground(Color.BLACK);
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
+        this.frame=0;
+        this.dead=0;
         this.init();
     }
 
     @Override
     public void paint(Graphics g) {
         super.paintComponents(g);
+        this.frame++;
         Graphics2D g2d = (Graphics2D) g;
         g2d.drawImage(this.background,0,0,null);
         double inf = this.infected.size();
         g.setColor(Color.white);
-        this.drawString(g,"Nombre de cas:" + inf+ "\nTaux d'infection par malade:" + ((inf==1)?0:(inf-1)/inf), 1100, 875);
+        g.setFont(FONT);
+        this.drawString(g,"Nombre de cas:" + inf+ "\nTaux d'infection par malade:" + ((inf==1)?0:(inf-1)/inf)+"\nNombres de morts:" + dead, 1100, 875);
         for (Human human : this.humans){
             human.draw(g2d);
+            if(human.isDead()) continue;
             human.move(Direction.values()[this.getInstance().getRandom().nextInt(7)],this.getInstance().getRandom().nextInt(200));
         }
         try {
@@ -90,19 +96,23 @@ public class Simulation extends JFrame {
     public void newInfection(Human human){
         this.infected.add(human);
     }
-
+    public void kill(Human human){
+        this.dead++;
+    }
     public Main getInstance() {
         return instance;
     }
 
     public boolean isWalkable(int x,int y){
-        boolean walkable;
-        try {
-            walkable = this.getField().getRGB(x, y) == -13557214;
+//        -16777216
+//                -13557214
+        boolean walkable=false;
+        try{
+            walkable = (this.getField().getRGB(x,y) != -16777216 && this.getField().getRGB(x,y) !=-13557214);
         }catch (Exception e){
-            walkable = false;
+            System.out.println(x +"+"+y);
         }
-        return !walkable;
+        return walkable;
     }
 
     public BufferedImage getField() {

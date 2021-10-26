@@ -12,7 +12,7 @@ public class Staff extends Human {
 
     @Override
     public void draw(Graphics2D g) {
-        g.setColor((this.isHealthy()) ? Color.GREEN : Color.RED);
+        g.setColor((this.isHealthy()) ? Color.GREEN : (this.isDead())?Color.BLACK: Color.RED);
         g.fillRect(this.getX(),this.getY(),10,10);
     }
 }
